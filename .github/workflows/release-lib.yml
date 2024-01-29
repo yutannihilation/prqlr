@@ -1,8 +1,6 @@
 name: release-lib
 on:
   push:
-    branches:
-      - savvy-tmp
     tags:
       - "lib-v*"
   pull_request:
