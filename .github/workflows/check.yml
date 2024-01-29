@@ -97,6 +97,7 @@ jobs:
           find ~/.cargo/registry/cache -regex '.*/savvy-[^-]+.crate' -delete || true
 
           Rscript -e 'pkgbuild::compile_dll()'
+          nm "$(pwd)/src/rust/target/${{ steps.rust-target.outputs.TARGET }}/release/libprqlr.a" | grep unwind_protect_impl
           echo "LIBPRQLR_PATH=$(pwd)/src/rust/target/${{ steps.rust-target.outputs.TARGET }}/release/libprqlr.a" >>$GITHUB_ENV
 
       - uses: r-lib/actions/check-r-package@v2
