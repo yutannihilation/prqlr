@@ -95,8 +95,7 @@ jobs:
           NOT_CRAN: "true"
         run: |
           # make sure savvy is built from source because rust-cache doesn't work well.
-          find '~/.cargo/registry/cache' -regex '.*/savvy-[^-]+.crate' -delete || true
-          find '${{ github.workspace }}/src/.cargo/registry/cache' -regex '.*/savvy-[^-]+.crate' -delete || true
+          find ~/.cargo/registry/cache -regex '.*/savvy-[^-]+.crate' -delete || true
 
           Rscript -e 'pkgbuild::compile_dll()'
           echo "LIBPRQLR_PATH=$(pwd)/src/rust/target/${{ steps.rust-target.outputs.TARGET }}/release/libprqlr.a" >>$GITHUB_ENV
