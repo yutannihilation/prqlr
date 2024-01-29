@@ -33,7 +33,7 @@ $(STATLIB):
 	fi && \
 	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
 	if [ "$(TARGET)" != "wasm32-unknown-emscripten" ]; then \
-	  cargo build --lib --manifest-path="$(CURDIR)/rust/Cargo.toml" --target-dir "$(TARGET_DIR)" --target="$(TARGET)" \
+	  cargo build -vv --lib --manifest-path="$(CURDIR)/rust/Cargo.toml" --target-dir "$(TARGET_DIR)" --target="$(TARGET)" \
 	    --profile="$(PRQLR_PROFILE)" --features="$(PRQLR_FEATURES)"; \
 	else \
 	  export CC="$(CC)" && \
