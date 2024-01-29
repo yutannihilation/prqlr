@@ -93,10 +93,11 @@ jobs:
 
           LIB_PATH="$(pwd)/rust/target/${TARGET}/${PRQLR_PROFILE}/${LIB_NAME}.a"
           ARTIFACT_NAME="${LIB_NAME}-${LIB_VERSION}-${TARGET}.tar.gz"
-          Rscript -e 'pkgbuild::compile_dll()'
+          NOT_CRAN=${NOT_CRAN} TARGET=${TARGET} PRQLR_PROFILE=${PRQLR_PROFILE} Rscript -e 'pkgbuild::compile_dll()'
           nm "${LIB_PATH}" | grep unwind_protect_impl
           tar -czf "../${ARTIFACT_NAME}" -C "rust/target/${TARGET}/${PRQLR_PROFILE}" "${LIB_NAME}.a"
           echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >>"$GITHUB_ENV"
+        shell: bash
 
       - name: upload artifact
         uses: actions/upload-artifact@v4
