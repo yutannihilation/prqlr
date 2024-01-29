@@ -77,22 +77,25 @@ jobs:
           echo 'CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc' >>"$GITHUB_ENV"
           echo 'CC=aarch64-linux-gnu-gcc' >>"$GITHUB_ENV"
 
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::pkgbuild
+
       - name: build lib
         env:
           NOT_CRAN: "true"
           TARGET: ${{ matrix.target }}
           PRQLR_PROFILE: release
+        working-directory: src
         run: |
           # make sure savvy is built from source because rust-cache doesn't work well.
           find ~/.cargo/registry/cache -regex '.*/savvy-[^-]+.crate' -delete || true
 
-          LIB_PATH="$(pwd)/src/rust/target/${TARGET}/${PRQLR_PROFILE}/${LIB_NAME}.a"
+          LIB_PATH="$(pwd)/rust/target/${TARGET}/${PRQLR_PROFILE}/${LIB_NAME}.a"
           ARTIFACT_NAME="${LIB_NAME}-${LIB_VERSION}-${TARGET}.tar.gz"
-
-          R CMD INSTALL . --library=${{ runner.temp }} --no-R --no-data --no-help --no-demo --no-inst --no-docs --no-exec --no-multiarch --no-test-load --preclean
-
+          Rscript -e 'pkgbuild::compile_dll()'
           nm "${LIB_PATH}" | grep unwind_protect_impl
-          tar -czf "${ARTIFACT_NAME}" -C "src/rust/target/${TARGET}/${PRQLR_PROFILE}" "${LIB_NAME}.a"
+          tar -czf "../${ARTIFACT_NAME}" -C "rust/target/${TARGET}/${PRQLR_PROFILE}" "${LIB_NAME}.a"
           echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >>"$GITHUB_ENV"
 
       - name: upload artifact
