@@ -89,7 +89,7 @@ jobs:
 
           LIB_PATH="$(pwd)/rust/target/${TARGET}/${PRQLR_PROFILE}/${LIB_NAME}.a"
           ARTIFACT_NAME="${LIB_NAME}-${LIB_VERSION}-${TARGET}.tar.gz"
-          make -f Makevars${{ runner.os == 'Windows' && '.win' || '.in' }} "${LIB_PATH}"
+          Rscript -e 'pkgbuild::compile_dll()'
           nm "${LIB_PATH}" | grep unwind_protect_impl
           tar -czf "../${ARTIFACT_NAME}" -C "rust/target/${TARGET}/${PRQLR_PROFILE}" "${LIB_NAME}.a"
           echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >>"$GITHUB_ENV"
